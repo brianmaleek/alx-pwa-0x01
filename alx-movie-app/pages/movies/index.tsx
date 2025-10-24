@@ -19,34 +19,29 @@ const Movies: React.FC<MProps> = () => {
 
   const fetchMovies = useCallback(async () => {
     setLoading(true)
-    try {
-      const response = await fetch('/api/fetch-movies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page,
-          year,
-          genre: genre === "All" ? "" : genre
-        })
-      })
-
-      if (!response.ok) {
-        const text = await response.text().catch(() => '')
-        console.error('fetch-movies failed', response.status, text)
-        // set an error state or fallback empty list instead of throwing
-        setMovies([])
-        return
+    const response = await fetch('/api/fetch-movies', {
+      method: 'POST',
+      body: JSON.stringify({
+        page,
+        year, 
+        genre: genre === "All" ? "" : genre
+      }),
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
       }
+    })
 
-      const data = await response.json().catch(() => ({ movies: [] }))
-      setMovies(Array.isArray(data.movies) ? data.movies : [])
-    } catch (err) {
-      console.error('fetch-movies error', err)
-      setMovies([])
-    } finally {
+    if (!response.ok) {
       setLoading(false)
+      throw new Error("Something went wrong")
     }
-   }, [page, year, genre])
+
+    const data = await response.json()
+    const results = data.movies
+    console.log(results)
+    setMovies(results)
+    setLoading(false)
+  }, [page, year, genre])
 
 
   useEffect(() => {
