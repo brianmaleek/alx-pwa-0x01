@@ -17,7 +17,7 @@ const Movies: React.FC<MProps> = () => {
   const [movies, setMovies] = useState<MoviesProps[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
- const fetchMovies = useCallback(async () => {
+  const fetchMovies = useCallback(async () => {
     setLoading(true)
     const response = await fetch('/api/fetch-movies', {
       method: 'POST',
